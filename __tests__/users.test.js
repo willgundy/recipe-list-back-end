@@ -20,6 +20,7 @@ describe('backend-express-template routes', () => {
 
   it('should create a new user', async () => {
     const resp = await request(app).post('/api/v1/users').send(mockUser);
+    console.log(resp.body);
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual({
       id: expect.any(String),
