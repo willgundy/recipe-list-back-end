@@ -21,6 +21,12 @@ describe('backend-express-template routes', () => {
     expect(res.body.length).toEqual(3);
   });
 
+  it('/:id should return a particular recipe', async () => {
+    const resp = await request(app).get('/api/v1/recipes/1');
+    expect(resp.status).toEqual(200);
+    expect(resp.body.id).toEqual('1');
+  });
+
   afterAll(() => {
     pool.end();
   });
