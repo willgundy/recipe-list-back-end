@@ -7,9 +7,13 @@ describe('backend-express-template routes', () => {
   beforeEach(() => {
     return setup(pool);
   });
-  it('example test - delete me!', () => {
-    expect(1).toEqual(1);
+
+  it('should return a list of all recipes', () => {
+    const resp = await request(app).get('/api/v1/recipes');
+    expect(resp.status).toEqual(200);
+    expect(resp.body.length).toEqual(2);
   });
+
   afterAll(() => {
     pool.end();
   });
