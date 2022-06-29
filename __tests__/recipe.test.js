@@ -8,7 +8,7 @@ describe('backend-express-template routes', () => {
     return setup(pool);
   });
 
-  it('should return a list of all recipes', () => {
+  it('should return a list of all recipes', async () => {
     const resp = await request(app).get('/api/v1/recipes');
     expect(resp.status).toEqual(200);
     expect(resp.body.length).toEqual(2);
