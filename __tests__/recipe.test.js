@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
 
+
 const mockUser = {
   email: 'testing@example.com',
   password: '123456'
@@ -47,7 +48,8 @@ describe('backend-express-template routes', () => {
   });
 
   it('/:id should return a particular recipe', async () => {
-    const resp = await request(app).get('/api/v1/recipes/1');
+    const [agent] = await registerAndLogin();
+    const resp = await agent.get('/api/v1/recipes/1');
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('1');
   });
@@ -72,7 +74,7 @@ describe('backend-express-template routes', () => {
     const resp = await agent
       .put('/api/v1/recipes/2')
       .send({ title: 'title', description: 'description' });
-      
+
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('2');
     const res = await agent.get('/api/v1/recipes');
