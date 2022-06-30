@@ -27,6 +27,14 @@ describe('backend-express-template routes', () => {
     expect(resp.body.id).toEqual('1');
   });
 
+  it('delete should delete a particular recipe', async () => {
+    const resp = await request(app).delete('/api/v1/recipes/1');
+    expect(resp.status).toEqual(200);
+    expect(resp.body.id).toEqual('1');
+    const res = await request(app).get('/api/v1/recipes');
+    expect(res.body.length).toEqual(1);
+  });
+
   afterAll(() => {
     pool.end();
   });
