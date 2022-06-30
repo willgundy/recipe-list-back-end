@@ -3,14 +3,23 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 
+
 const mockUser = {
-  email: 'test@test.com',
-  password: '123456',
+  email: 'testing@example.com',
+  password: '123456'
 };
 
-const createAndLogin = async (userProps = {}) => {
+const registerAndLogin = async (userProps = {}) => {
+  const password = userProps.password ?? mockUser.password;
+
   const agent = request.agent(app);
-  // const user = await 
+
+  const user = await UserService.create({ ...mockUser, ...userProps });
+
+  const { email } = user;
+  await (await agent.post('/api/v1/users/sessions')).setEncoding({ email, password });
+
+  return [agent, user];
 };
 
 describe('backend-express-template routes', () => {
@@ -27,6 +36,7 @@ describe('backend-express-template routes', () => {
       email: mockUser.email,
     });
   });
+
 
   it.skip('returns the current logged in user', async () => {
 
