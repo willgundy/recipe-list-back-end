@@ -17,7 +17,7 @@ const registerAndLogin = async (userProps = {}) => {
   const user = await UserService.create({ ...mockUser, ...userProps });
 
   const { email } = user;
-  await (await agent.post('/api/v1/users/sessions')).setEncoding({ email, password });
+  await agent.post('/api/v1/users/sessions').send({ email, password });
 
   return [agent, user];
 };
@@ -31,17 +31,18 @@ describe('backend-express-template routes', () => {
   it('should return a list of all recipes for authenticated users', async () => {
     const [agent] = await registerAndLogin();
     const resp = await agent.get('/api/v1/recipes');
-    console.log('resp.body', resp.body);
     expect(resp.status).toEqual(200);
     expect(resp.body.length).toEqual(2);
   });
 
   it('should create a new recipe when called', async () => {
-    const resp = await request(app)
+    const [agent] = await registerAndLogin();
+    const resp = await agent
       .post('/api/v1/recipes')
       .send({ title: 'test', description: 'test' });
     expect(resp.status).toEqual(200);
-    const res = await request(app).get('/api/v1/recipes');
+
+    const res = await agent.get('/api/v1/recipes');
     expect(res.body.length).toEqual(3);
   });
 
@@ -58,21 +59,23 @@ describe('backend-express-template routes', () => {
   });
 
   it('delete should delete a particular recipe', async () => {
-    const resp = await request(app).delete('/api/v1/recipes/1');
+    const [agent] = await registerAndLogin();
+    const resp = await agent.delete('/api/v1/recipes/1');
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('1');
-    const res = await request(app).get('/api/v1/recipes');
+    const res = await agent.get('/api/v1/recipes');
     expect(res.body.length).toEqual(1);
   });
 
   it('update recipe should update a particular recipe', async () => {
-    const resp = await request(app)
+    const [agent] = await registerAndLogin();
+    const resp = await agent
       .put('/api/v1/recipes/2')
       .send({ title: 'title', description: 'description' });
-    console.log(resp.body);
+      
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('2');
-    const res = await request(app).get('/api/v1/recipes');
+    const res = await agent.get('/api/v1/recipes');
     expect(res.body.length).toEqual(2);
   });
 
