@@ -46,7 +46,8 @@ describe('backend-express-template routes', () => {
   });
 
   it('/:id should return a particular recipe', async () => {
-    const resp = await request(app).get('/api/v1/recipes/1');
+    const [agent] = await registerAndLogin();
+    const resp = await agent.get('/api/v1/recipes/1');
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('1');
   });
